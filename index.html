@@ -1,0 +1,1880 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ORBI Firebase - App Real</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}
+:root{
+  --primary:#ff4d6d;
+  --secondary:#ff2d75;
+  --dark:#24101a;
+  --gray:#8a6f7c;
+  --soft:#fff1f6;
+  --ok:#21b573;
+  --warn:#ff9f1c;
+  --bad:#d62828;
+}
+body{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:
+    radial-gradient(circle at 15% 15%,rgba(255,255,255,.9) 0%,transparent 24%),
+    radial-gradient(circle at 80% 20%,rgba(255,77,109,.55) 0%,transparent 28%),
+    radial-gradient(circle at 30% 80%,rgba(255,143,171,.65) 0%,transparent 32%),
+    radial-gradient(circle at 85% 85%,rgba(179,36,79,.55) 0%,transparent 30%),
+    linear-gradient(145deg,#fff0f5,#ffd6e7,#ff8fab,#b3244f);
+  overflow:hidden;
+}
+.phone{
+  width:370px;
+  height:740px;
+  background:#111;
+  border-radius:42px;
+  padding:10px;
+  box-shadow:0 30px 80px rgba(0,0,0,.35);
+}
+.app{
+  width:100%;
+  height:100%;
+  border-radius:32px;
+  overflow:hidden;
+  position:relative;
+  background:
+    radial-gradient(circle at 20% 10%,rgba(255,255,255,.9) 0%,transparent 28%),
+    radial-gradient(circle at 85% 20%,rgba(255,77,109,.35) 0%,transparent 32%),
+    radial-gradient(circle at 50% 85%,rgba(179,36,79,.28) 0%,transparent 35%),
+    linear-gradient(145deg,#fff7fa,#ffe0ea,#ffc2d1);
+}
+.notch{
+  position:absolute;
+  top:10px;
+  left:50%;
+  transform:translateX(-50%);
+  width:120px;
+  height:26px;
+  background:#111;
+  border-radius:30px;
+  z-index:60;
+}
+.topbar{
+  position:absolute;
+  top:45px;
+  left:16px;
+  right:16px;
+  height:58px;
+  z-index:50;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.top-logo{width:95px;max-height:50px;object-fit:contain}
+.logo-text,.logo-fallback{
+  color:var(--primary);
+  font-weight:900;
+  letter-spacing:-2px;
+}
+.logo-text{font-size:26px}
+.logo-fallback{
+  font-size:54px;
+  text-align:center;
+  margin:24px 0;
+}
+.top-actions{display:flex;gap:10px}
+.icon-btn{
+  width:44px;
+  height:44px;
+  border:none;
+  border-radius:16px;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  color:white;
+  cursor:pointer;
+  position:relative;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  box-shadow:0 10px 24px rgba(255,77,109,.26);
+}
+.badge{
+  position:absolute;
+  top:-5px;
+  right:-5px;
+  background:white;
+  color:var(--primary);
+  font-size:10px;
+  font-weight:bold;
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.screen{
+  display:none;
+  height:100%;
+  padding:115px 20px 25px;
+  overflow-y:auto;
+}
+.screen.active{display:block}
+.login-screen{padding-top:80px}
+.logo{text-align:center;margin:10px 0}
+.logo-img{width:235px;display:block;margin:0 auto;object-fit:contain}
+input,select,textarea{
+  width:100%;
+  padding:15px;
+  margin-bottom:14px;
+  border:none;
+  border-radius:18px;
+  background:rgba(255,255,255,.78);
+  outline:none;
+  backdrop-filter:blur(15px);
+  box-shadow:0 8px 20px rgba(255,77,109,.08);
+  color:var(--dark);
+}
+textarea{resize:none;height:80px}
+
+.file-help{
+  font-size:12px;
+  color:var(--gray);
+  margin:-8px 0 12px;
+  line-height:1.3;
+}
+.preview-img{
+  width:100%;
+  height:130px;
+  object-fit:cover;
+  border-radius:20px;
+  background:white;
+  margin-bottom:12px;
+  display:none;
+}
+.btn{
+  width:100%;
+  padding:15px;
+  border:none;
+  border-radius:18px;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  color:white;
+  font-weight:bold;
+  font-size:15px;
+  cursor:pointer;
+  box-shadow:0 12px 25px rgba(255,77,109,.28);
+  margin-bottom:10px;
+}
+.btn-outline{
+  background:white;
+  color:var(--primary);
+  border:2px solid var(--primary);
+  box-shadow:none;
+}
+.btn-small{
+  width:auto;
+  padding:9px 12px;
+  border-radius:14px;
+  font-size:12px;
+  margin:4px 4px 0 0;
+}
+.link{text-align:center;margin-top:18px;font-size:14px}
+.link a{color:var(--primary);text-decoration:none;font-weight:bold}
+.quick-actions{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:20px;
+}
+.action-btn{
+  width:73px;
+  height:73px;
+  border:none;
+  border-radius:24px;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  color:white;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:6px;
+  cursor:pointer;
+  box-shadow:0 13px 25px rgba(255,77,109,.28);
+}
+.action-btn small{font-size:10px;font-weight:600}
+.hero,.card{
+  background:rgba(255,255,255,.65);
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.55);
+  border-radius:24px;
+  padding:15px;
+  margin-bottom:14px;
+  box-shadow:0 12px 28px rgba(179,36,79,.12);
+}
+.hero h2,.card h2{font-size:22px;margin-bottom:5px;color:var(--dark)}
+.hero p,.card p{color:var(--gray);font-size:13px;line-height:1.35}
+.section-title{margin:12px 0;color:var(--dark);font-size:18px}
+.row{display:flex;gap:10px;align-items:center}
+.space{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.product{display:flex;gap:14px;align-items:center}
+.product-img{
+  width:72px;
+  height:72px;
+  border-radius:20px;
+  background:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  flex-shrink:0;
+}
+.product-img img{width:100%;height:100%;object-fit:cover}
+.product-info{flex:1}
+.product-info h3{font-size:16px;color:var(--dark)}
+.product-info p{font-size:12px;color:var(--gray);margin:4px 0}
+.price{color:var(--primary);font-weight:bold}
+.add{
+  border:none;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  color:white;
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  font-size:22px;
+  cursor:pointer;
+  flex:0 0 auto;
+}
+.status{
+  display:inline-block;
+  padding:7px 12px;
+  border-radius:20px;
+  background:#fff1f5;
+  color:var(--primary);
+  font-size:12px;
+  font-weight:bold;
+  margin-top:8px;
+}
+.status.ok{background:#e9fff4;color:var(--ok)}
+.status.warn{background:#fff4df;color:var(--warn)}
+.status.bad{background:#ffe8e8;color:var(--bad)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stat{text-align:center}
+.stat b{color:var(--primary);font-size:22px}
+.pill-list{display:flex;gap:8px;overflow-x:auto;margin:8px 0 15px}
+.pill{
+  border:none;
+  border-radius:999px;
+  background:white;
+  color:var(--primary);
+  padding:9px 13px;
+  font-weight:700;
+  white-space:nowrap;
+}
+.chat-box{
+  height:285px;
+  overflow-y:auto;
+  background:rgba(255,255,255,.45);
+  border-radius:22px;
+  padding:12px;
+  margin-bottom:12px;
+}
+.msg{
+  max-width:80%;
+  padding:10px 13px;
+  border-radius:16px;
+  margin-bottom:10px;
+  font-size:13px;
+  line-height:1.25;
+}
+.me{margin-left:auto;background:linear-gradient(135deg,var(--primary),var(--secondary));color:white}
+.other{background:white;color:var(--dark)}
+.system{margin:0 auto 10px;background:#fff4df;color:#9a5b00;text-align:center;font-size:12px}
+.map{
+  height:225px;
+  border-radius:24px;
+  background:linear-gradient(135deg,#fff,#ffe5ef);
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.7);
+  box-shadow:0 12px 28px rgba(179,36,79,.12);
+  margin-bottom:14px;
+}
+.map::before{
+  content:"";
+  position:absolute;
+  inset:22px;
+  border:3px dashed rgba(255,77,109,.22);
+  border-radius:26px;
+}
+.map .zone{
+  position:absolute;
+  background:white;
+  border-radius:14px;
+  padding:7px 10px;
+  font-size:11px;
+  font-weight:700;
+  color:var(--dark);
+  box-shadow:0 7px 18px rgba(0,0,0,.08);
+}
+.zone.a{top:35px;left:28px}.zone.b{top:42px;right:30px}.zone.c{bottom:42px;left:38px}.zone.d{bottom:50px;right:36px}
+.dot{
+  position:absolute;
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  background:var(--primary);
+  box-shadow:0 0 0 7px rgba(255,77,109,.17);
+}
+.dot.you{left:165px;top:98px;background:#222}
+.dot.v1{left:72px;top:95px}.dot.v2{right:75px;top:125px}.dot.v3{left:190px;bottom:58px}
+.map-note{font-size:12px;color:var(--gray);margin-top:6px}
+.toast{
+  position:absolute;
+  left:18px;
+  right:18px;
+  bottom:22px;
+  background:#24101a;
+  color:white;
+  padding:14px 16px;
+  border-radius:18px;
+  font-size:13px;
+  z-index:80;
+  opacity:0;
+  transform:translateY(20px);
+  pointer-events:none;
+  transition:.25s;
+}
+.toast.show{opacity:1;transform:translateY(0)}
+.hidden{display:none!important}
+button:active{transform:scale(.95)}
+.avatar{
+  width:76px;
+  height:76px;
+  border-radius:28px;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  margin:0 auto 10px;
+  box-shadow:0 15px 30px rgba(255,77,109,.25);
+}
+.profile{text-align:center;margin-bottom:14px}
+.profile h2{color:var(--dark)}
+.profile p{color:var(--gray)}
+.timeline{display:grid;gap:10px;margin:12px 0}
+.step{display:flex;gap:10px;color:#8a6f7c}
+.step b{display:block;color:#24101a}
+.dotline{
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  background:#ffd1df;
+  box-shadow:0 0 0 4px #fff;
+  flex:0 0 auto;
+}
+.step.done .dotline{background:var(--primary)}
+.stock-badge{display:inline-block;margin-top:4px;color:#21b573;font-size:12px;font-weight:800}
+.tab-space{height:70px}
+
+/* Iconos CSS sin emojis */
+.icon{width:28px;height:28px;display:block;position:relative}
+.mini{transform:scale(.65)}
+.icon.home::before{content:"";position:absolute;width:18px;height:18px;border:3px solid white;border-top:none;border-radius:3px;bottom:1px;left:3px}
+.icon.home::after{content:"";position:absolute;width:17px;height:17px;border-left:3px solid white;border-top:3px solid white;transform:rotate(45deg);top:1px;left:4px}
+.icon.cart::before{content:"";position:absolute;width:21px;height:14px;border:3px solid white;border-top:none;border-radius:3px;top:6px;left:3px}
+.icon.cart::after{content:"";position:absolute;width:5px;height:5px;background:white;border-radius:50%;left:7px;bottom:1px;box-shadow:13px 0 0 white}
+.icon.chat::before{content:"";position:absolute;width:23px;height:18px;border:3px solid white;border-radius:9px;left:1px;top:3px}
+.icon.chat::after{content:"";position:absolute;width:8px;height:8px;border-left:3px solid white;border-bottom:3px solid white;transform:rotate(-20deg);left:6px;bottom:1px}
+.icon.user::before{content:"";position:absolute;width:10px;height:10px;border:3px solid white;border-radius:50%;top:1px;left:7px}
+.icon.user::after{content:"";position:absolute;width:22px;height:12px;border:3px solid white;border-radius:14px 14px 4px 4px;border-bottom:none;left:1px;bottom:1px}
+.icon.store::before{content:"";position:absolute;width:22px;height:15px;border:3px solid white;border-top:none;bottom:1px;left:1px;border-radius:3px}
+.icon.store::after{content:"";position:absolute;width:24px;height:9px;border:3px solid white;top:1px;left:0;border-radius:5px 5px 2px 2px}
+.icon.plus::before{content:"";position:absolute;width:24px;height:4px;background:white;top:12px;left:2px;border-radius:4px}
+.icon.plus::after{content:"";position:absolute;width:4px;height:24px;background:white;top:2px;left:12px;border-radius:4px}
+.icon.panel::before{content:"";position:absolute;width:9px;height:20px;background:white;bottom:2px;left:2px;border-radius:3px;box-shadow:9px -6px 0 white,18px -12px 0 white}
+.icon.users::before{content:"";position:absolute;width:9px;height:9px;border:3px solid white;border-radius:50%;top:1px;left:8px}
+.icon.users::after{content:"";position:absolute;width:22px;height:11px;border:3px solid white;border-bottom:none;border-radius:14px 14px 4px 4px;bottom:2px;left:1px}
+.icon.box::before{content:"";position:absolute;width:22px;height:18px;border:3px solid white;border-radius:4px;bottom:2px;left:1px}
+.icon.box::after{content:"";position:absolute;width:14px;height:14px;border-left:3px solid white;border-top:3px solid white;transform:rotate(45deg);top:1px;left:6px}
+.icon.exit::before{content:"";position:absolute;width:16px;height:20px;border:3px solid white;border-right:none;border-radius:4px;left:1px;top:3px}
+.icon.exit::after{content:"";position:absolute;width:15px;height:3px;background:white;right:1px;top:13px;border-radius:4px;box-shadow:5px -5px 0 -1px white,5px 5px 0 -1px white}
+.icon.pin::before{content:"";position:absolute;width:16px;height:16px;border:3px solid white;border-radius:50% 50% 50% 0;transform:rotate(-45deg);left:5px;top:2px}
+.icon.pin::after{content:"";position:absolute;width:5px;height:5px;background:white;border-radius:50%;left:11px;top:8px}
+.icon.bell::before{content:"";position:absolute;width:19px;height:17px;border:3px solid white;border-bottom:none;border-radius:14px 14px 3px 3px;left:3px;top:4px}
+.icon.bell::after{content:"";position:absolute;width:20px;height:3px;background:white;left:4px;bottom:4px;border-radius:5px;box-shadow:6px 4px 0 -1px white}
+</style>
+</head>
+
+<body>
+<div class="phone">
+  <div class="app">
+    <div class="notch"></div>
+
+    <header class="topbar hidden" id="topbar">
+      <img src="img/logo.png" class="top-logo" alt="ORBI" onerror="this.outerHTML='<b class=&quot;logo-text&quot;>ORBI</b>'">
+      <div class="top-actions">
+        <button class="icon-btn" onclick="ir('notificaciones')"><span class="icon bell mini"></span><span class="badge" id="notifCount">0</span></button>
+        <button class="icon-btn" onclick="ir('chats')"><span class="icon chat mini"></span></button>
+        <button class="icon-btn" onclick="ir('carrito')"><span class="icon cart mini"></span><span class="badge" id="cartCount">0</span></button>
+      </div>
+    </header>
+
+    <section class="screen active" id="bienvenida">
+      <div class="logo">
+        <img src="img/logo.png" class="logo-img" alt="ORBI" onerror="this.outerHTML='<div class=&quot;logo-fallback&quot;>ORBI</div>'">
+      </div>
+      <div class="hero">
+        <h2>ORBItando cerca de ti</h2>
+        <p>Compra dentro de tu escuela!</p>
+      </div>
+      <button class="btn" onclick="ir('onboarding')">Explorar vendedores cercanos</button>
+      <button class="btn btn-outline" onclick="mostrarLogin()">Ya tengo cuenta</button>
+      <button class="btn btn-outline" onclick="mostrarRegistro()">Crear cuenta</button>
+      <div class="card">
+        <p><b>Importante:</b> Si te secuestran fuera de tu uni, no nos hacemos responsables :D</p>
+      </div>
+    </section>
+
+    <section class="screen login-screen" id="login">
+      <div class="logo"><img src="img/logo.png" class="logo-img" alt="ORBI" onerror="this.outerHTML='<div class=&quot;logo-fallback&quot;>ORBI</div>'"></div>
+      <input id="loginEmail" type="email" placeholder="Correo">
+      <input id="loginPass" type="password" placeholder="Contraseña">
+      <button class="btn" onclick="login()">Iniciar sesión</button>
+      <div class="link"><a href="#" onclick="mostrarRegistro()">Crear cuenta</a></div>
+      
+    </section>
+
+    <section class="screen login-screen" id="registro">
+      <div class="logo"><img src="img/logo.png" class="logo-img" alt="ORBI" onerror="this.outerHTML='<div class=&quot;logo-fallback&quot;>ORBI</div>'"></div>
+      <input id="regNombre" placeholder="Nombre completo">
+      <input id="regEmail" type="email" placeholder="Correo">
+      <input id="regPass" type="password" placeholder="Contraseña mínimo 6 caracteres">
+      <select id="regRol">
+        <option value="cliente">Cliente</option>
+        <option value="vendedor">Vendedor estudiante</option>
+      </select>
+      <select id="regEscuela">
+        <option>UPIICSA</option>
+        <option>ESCOM</option>
+        <option>CECyT 5</option>
+      </select>
+      <button class="btn" onclick="registrar()">Crear cuenta</button>
+      <div class="link"><a href="#" onclick="mostrarLogin()">Ya tengo cuenta</a></div>
+    </section>
+
+    <section class="screen" id="onboarding">
+      <div class="hero">
+        <h2>Activa tu campus</h2>
+        <p>ORBI muestra solo vendedores registrados dentro de tu escuela.</p>
+      </div>
+      <select id="campusSelect">
+        <option>UPIICSA</option>
+        <option>ESCOM</option>
+        <option>CECyT 5</option>
+      </select>
+      <button class="btn" onclick="activarCampus()">Permitir ubicación y continuar</button>
+      <button class="btn btn-outline" onclick="activarCampus()">Seleccionar escuela manualmente</button>
+      <div class="map">
+        <span class="zone a">Ingenieria</span><span class="zone b">Pecera</span>
+        <span class="zone c">Biblioteca</span><span class="zone d">Canchas</span>
+        <span class="dot you"></span><span class="dot v1"></span><span class="dot v2"></span><span class="dot v3"></span>
+      </div>
+      <p class="map-note">Punto negro: tú. Puntos rosas: vendedores dentro de tu escuela.</p>
+    </section>
+
+    <section class="screen" id="clienteHome">
+      <div class="quick-actions">
+        <button class="action-btn" onclick="ir('clienteHome')"><span class="icon home"></span><small>Inicio</small></button>
+        <button class="action-btn" onclick="ir('mapaCampus')"><span class="icon pin"></span><small>Mapa</small></button>
+        <button class="action-btn" onclick="ir('historialCliente')"><span class="icon box"></span><small>Historial</small></button>
+        <button class="action-btn" onclick="ir('perfil')"><span class="icon user"></span><small>Perfil</small></button>
+      </div>
+      <div class="hero">
+        <h2 id="saludoCliente">Hola</h2>
+        <p id="campusText">Compra dentro de tu campus.</p>
+      </div>
+      <input id="buscador" oninput="renderProductos()" placeholder="Buscar productos">
+      <div class="pill-list">
+        <button class="pill" onclick="filtrar('Todos')">Todos</button>
+        <button class="pill" onclick="filtrar('Dulces')">Dulces</button>
+        <button class="pill" onclick="filtrar('Bebidas')">Bebidas</button>
+        <button class="pill" onclick="filtrar('Comida')">Comida</button>
+      </div>
+      <h3 class="section-title">Vendedores cerca de ti</h3>
+      <div id="listaProductos"></div>
+    </section>
+
+    <section class="screen" id="mapaCampus">
+      <div class="quick-actions">
+        <button class="action-btn" onclick="volverHome()"><span class="icon home"></span><small>Inicio</small></button>
+        <button class="action-btn" onclick="ir('chats')"><span class="icon chat"></span><small>Chats</small></button>
+        <button class="action-btn" onclick="ir('carrito')"><span class="icon cart"></span><small>Carrito</small></button>
+        <button class="action-btn" onclick="ir('perfil')"><span class="icon user"></span><small>Perfil</small></button>
+      </div>
+      <h2>Mapa de upiicsa</h2>
+      <div class="map">
+        <span class="zone a">Ingenieria</span><span class="zone b">Cafetería</span>
+        <span class="zone c">Biblioteca</span><span class="zone d">Canchas</span>
+        <span class="dot you"></span><span class="dot v1"></span><span class="dot v2"></span><span class="dot v3"></span>
+      </div>
+      <div class="card">
+        <h3>Zona segura ORBI</h3>
+        <p>Solo se muestran productos y vendedores dentro de <b id="mapSchool">tu escuela</b>.</p>
+      </div>
+      <div id="nearbyList"></div>
+    </section>
+
+    <section class="screen" id="detalleProducto">
+      <button class="btn btn-outline" onclick="ir('clienteHome')">Volver</button>
+      <div id="detalleProductoInfo"></div>
+    </section>
+
+    <section class="screen" id="perfilVendedor">
+      <button class="btn btn-outline" onclick="ir('clienteHome')">Volver</button>
+      <div id="perfilVendedorInfo"></div>
+    </section>
+
+    <section class="screen" id="carrito">
+      <div class="quick-actions">
+        <button class="action-btn" onclick="volverHome()"><span class="icon home"></span><small>Inicio</small></button>
+        <button class="action-btn" onclick="ir('carrito')"><span class="icon cart"></span><small>Carrito</small></button>
+        <button class="action-btn" onclick="ir('chats')"><span class="icon chat"></span><small>Chats</small></button>
+        <button class="action-btn" onclick="ir('perfil')"><span class="icon user"></span><small>Perfil</small></button>
+      </div>
+      <h2>Confirmar pedido</h2>
+      <div id="carritoLista"></div>
+      <select id="puntoEntrega">
+        <option>Mi salón</option>
+        <option>Ingenieria</option>
+        <option>Cafetería</option>
+        <option>Biblioteca</option>
+        <option>Canchas</option>
+      </select>
+      <select id="metodoPago">
+        <option>Efectivo al recibir</option>
+        <option>Transferencia acordada en chat</option>
+      </select>
+      <button class="btn" onclick="confirmarAntesPedido()">Confirmar y contactar vendedor</button>
+      <button class="btn btn-outline" onclick="vaciarCarrito()">Vaciar carrito</button>
+    </section>
+
+    <section class="screen" id="seguimientoPedido">
+      <div id="segInfo"></div>
+    </section>
+
+    <section class="screen" id="historialCliente">
+      <h2>Historial de compras</h2>
+      <div id="historialClienteLista"></div>
+    </section>
+
+    <section class="screen" id="favoritos">
+      <h2>Favoritos</h2>
+      <div id="favoritosLista"></div>
+    </section>
+
+    <section class="screen" id="vendedorHome">
+      <div class="quick-actions">
+        <button class="action-btn" onclick="ir('vendedorHome')"><span class="icon store"></span><small>Tienda</small></button>
+        <button class="action-btn" onclick="ir('subirProducto')"><span class="icon plus"></span><small>Subir</small></button>
+        <button class="action-btn" onclick="ir('pedidosVendedor')"><span class="icon box"></span><small>Pedidos</small></button>
+        <button class="action-btn" onclick="ir('perfil')"><span class="icon user"></span><small>Perfil</small></button>
+      </div>
+      <div class="hero"><h2>Panel vendedor</h2><p id="estadoTiendaTexto">Tienda abierta y visible dentro del campus.</p></div>
+      <button class="btn" onclick="toggleTienda()" id="btnTienda">Cerrar tienda</button>
+      <button class="btn btn-outline" onclick="toggleOcupado()" id="btnOcupado">Modo ocupado</button>
+      <div class="stats">
+        <div class="card stat"><b id="ventasHoy">$0</b><p>Ventas</p></div>
+        <div class="card stat"><b id="pedidosPendientes">0</b><p>Pendientes</p></div>
+      </div>
+      <button class="btn" onclick="ir('subirProducto')">Subir nuevo producto</button>
+      <h3 class="section-title">Tus productos</h3>
+      <div id="misProductos"></div>
+    </section>
+
+    <section class="screen" id="subirProducto">
+      <div class="quick-actions">
+        <button class="action-btn" onclick="ir('vendedorHome')"><span class="icon store"></span><small>Tienda</small></button>
+        <button class="action-btn" onclick="ir('pedidosVendedor')"><span class="icon box"></span><small>Pedidos</small></button>
+        <button class="action-btn" onclick="ir('chats')"><span class="icon chat"></span><small>Chats</small></button>
+        <button class="action-btn" onclick="ir('perfil')"><span class="icon user"></span><small>Perfil</small></button>
+      </div>
+      <h2 id="formProductoTitulo">Subir producto</h2>
+      <input id="prodNombre" placeholder="Nombre del producto">
+      <input id="prodPrecio" type="number" placeholder="Precio">
+      <input id="prodLugar" placeholder="Lugar de entrega">
+      <select id="prodCategoria"><option>Dulces</option><option>Bebidas</option><option>Comida</option></select>
+      <input id="prodFoto" type="file" accept="image/*">
+      
+      <input id="prodStock" type="number" placeholder="Stock disponible">
+      <input id="prodTiempo" placeholder="Tiempo estimado, ej. 10-15 min">
+      <textarea id="prodDesc" placeholder="Descripción"></textarea>
+      <button class="btn" onclick="guardarProducto()">Guardar producto</button>
+    </section>
+
+    <section class="screen" id="pedidosVendedor">
+      <div class="quick-actions">
+        <button class="action-btn" onclick="ir('vendedorHome')"><span class="icon store"></span><small>Tienda</small></button>
+        <button class="action-btn" onclick="ir('subirProducto')"><span class="icon plus"></span><small>Subir</small></button>
+        <button class="action-btn" onclick="ir('chats')"><span class="icon chat"></span><small>Chats</small></button>
+        <button class="action-btn" onclick="ir('perfil')"><span class="icon user"></span><small>Perfil</small></button>
+      </div>
+      <h2>Pedidos recibidos</h2>
+      <div id="listaPedidosVendedor"></div>
+    </section>
+
+    <section class="screen" id="detallePedido">
+      <button class="btn btn-outline" onclick="ir('pedidosVendedor')">Volver</button>
+      <h2>Detalle del pedido</h2>
+      <div id="detallePedidoInfo"></div>
+    </section>
+
+    <section class="screen" id="historialVendedor">
+      <h2>Historial de ventas</h2>
+      <div id="historialVendedorLista"></div>
+    </section>
+
+    <section class="screen" id="adminHome">
+      <div class="quick-actions">
+        <button class="action-btn" onclick="ir('adminHome')"><span class="icon panel"></span><small>Panel</small></button>
+        <button class="action-btn" onclick="ir('adminUsuarios')"><span class="icon users"></span><small>Usuarios</small></button>
+        <button class="action-btn" onclick="ir('adminProductos')"><span class="icon box"></span><small>Productos</small></button>
+        <button class="action-btn" onclick="ir('adminReportes')"><span class="icon chat"></span><small>Reportes</small></button>
+      </div>
+      <div class="hero"><h2>Panel administrador</h2><p>Control general, moderación y reportes.</p></div>
+      <div class="stats">
+        <div class="card stat"><b id="totalUsuarios">0</b><p>Usuarios</p></div>
+        <div class="card stat"><b id="totalProductos">0</b><p>Productos</p></div>
+        <div class="card stat"><b id="totalPedidos">0</b><p>Pedidos</p></div>
+        <div class="card stat"><b id="totalVentas">$0</b><p>Ventas</p></div>
+      </div>
+      <button class="btn" onclick="ir('adminPedidos')">Pedidos activos</button>
+      <button class="btn btn-outline" onclick="ir('adminVendedores')">Vendedores y aprobaciones</button>
+    </section>
+    <section class="screen" id="adminUsuarios"><h2>Usuarios</h2><div id="listaUsuarios"></div></section>
+    <section class="screen" id="adminProductos"><h2>Productos</h2><div id="adminListaProductos"></div></section>
+    <section class="screen" id="adminReportes"><h2>Reportes</h2><div id="listaReportes"></div></section>
+    <section class="screen" id="adminPedidos"><h2>Pedidos activos</h2><div id="adminListaPedidos"></div></section>
+    <section class="screen" id="adminVendedores"><h2>Vendedores</h2><div id="adminListaVendedores"></div></section>
+
+    <section class="screen" id="chats">
+      <div class="quick-actions">
+        <button class="action-btn" onclick="volverHome()"><span class="icon home"></span><small>Inicio</small></button>
+        <button class="action-btn" onclick="ir('chats')"><span class="icon chat"></span><small>Chats</small></button>
+        <button class="action-btn" onclick="ir('notificaciones')"><span class="icon bell"></span><small>Avisos</small></button>
+        <button class="action-btn" onclick="ir('perfil')"><span class="icon user"></span><small>Perfil</small></button>
+      </div>
+      <h2>Chats</h2>
+      <div id="listaChats"></div>
+    </section>
+
+    <section class="screen" id="chatDetalle">
+      <button class="btn btn-outline" onclick="ir('chats')">Volver</button>
+      <h2 id="chatTitulo">Chat</h2>
+      <div class="chat-box" id="mensajesChat"></div>
+      <input id="mensajeInput" placeholder="Escribe un mensaje">
+      <button class="btn" onclick="enviarMensaje()">Enviar mensaje</button>
+      <button class="btn btn-outline" onclick="finalizarPedido()">Finalizar de mi parte</button>
+      <div class="card"><p id="estadoPedido">Estado del pedido</p></div>
+    </section>
+
+    <section class="screen" id="calificar">
+      <h2>Calificar vendedor</h2>
+      <div class="card"><h3 id="calificarNombre">Vendedor</h3><p>¿Cómo fue tu experiencia?</p></div>
+      <select id="rating"><option value="5">★★★★★ Excelente</option><option value="4">★★★★ Bueno</option><option value="3">★★★ Regular</option><option value="2">★★ Malo</option><option value="1">★ Muy malo</option></select>
+      <textarea id="comentarioRating" placeholder="Comentario opcional"></textarea>
+      <button class="btn" onclick="guardarCalificacion()">Enviar calificación</button>
+    </section>
+
+    <section class="screen" id="notificaciones"><h2>Notificaciones</h2><div id="notificacionesLista"></div></section>
+
+    <section class="screen" id="perfil">
+      <div class="quick-actions">
+        <button class="action-btn" onclick="volverHome()"><span class="icon home"></span><small>Inicio</small></button>
+        <button class="action-btn" onclick="ir('favoritos')"><span class="icon box"></span><small>Favoritos</small></button>
+        <button class="action-btn" onclick="ir('notificaciones')"><span class="icon bell"></span><small>Avisos</small></button>
+        <button class="action-btn" onclick="cerrarSesion()"><span class="icon exit"></span><small>Salir</small></button>
+      </div>
+      <div class="profile"><div class="avatar"></div><h2 id="perfilNombre">Usuario</h2><p id="perfilRol">Rol</p></div>
+      <div class="card" id="perfilEscuela"></div>
+      <button class="btn" onclick="cerrarSesion()">Cerrar sesión</button>
+    </section>
+
+    <section class="screen" id="soporte">
+      <h2>Ayuda y soporte</h2>
+      <div class="card"><p>Reporta problemas de entrega, trato del vendedor o producto.</p></div>
+      <select id="soporteMotivo">
+        <option>Pedido incompleto</option>
+        <option>Vendedor no responde</option>
+        <option>Producto en mal estado</option>
+        <option>Problema con entrega</option>
+      </select>
+      <textarea id="soporteTexto" placeholder="Describe el problema"></textarea>
+      <button class="btn" onclick="enviarSoporte()">Enviar reporte</button>
+    </section>
+
+    <div class="toast" id="toast"></div>
+  </div>
+</div>
+
+<script type="module">
+/* ==============================
+   CONFIGURA FIREBASE AQUÍ
+   1) Entra a https://console.firebase.google.com
+   2) Crea proyecto
+   3) Agrega app Web
+   4) Copia firebaseConfig aquí
+================================= */
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+import {
+  getFirestore,
+  collection,
+  doc,
+  setDoc,
+  addDoc,
+  getDoc,
+  getDocs,
+  updateDoc,
+  deleteDoc,
+  query,
+  where,
+  orderBy,
+  onSnapshot,
+  serverTimestamp,
+  increment
+} from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+
+/* PEGA AQUÍ TU CONFIG REAL DE FIREBASE */
+const firebaseConfig = {
+  apiKey: "AIzaSyDUvdXH57iPGzcEvW7A0bNAobcqNlv3RN4",
+  authDomain: "orbi-af617.firebaseapp.com",
+  projectId: "orbi-af617",
+  storageBucket: "orbi-af617.firebasestorage.app",
+  messagingSenderId: "337318159013",
+  appId: "1:337318159013:web:b5613cfc54e64e6438234c",
+  measurementId: "G-9PWK6M5MBG"
+};
+
+let app, auth, db;
+let firebaseListo = false;
+
+try{
+  app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  db = getFirestore(app);
+  firebaseListo = !firebaseConfig.apiKey.includes("PEGA_AQUI");
+}catch(e){
+  console.error(e);
+}
+
+/* ==============================
+   ESTADO GLOBAL
+================================= */
+let usuarioActual = null;
+let campusActivo = "UPIICSA";
+let visitante = true;
+let carrito = [];
+let favoritos = [];
+let filtro = "Todos";
+let chatActual = null;
+let pedidoActual = null;
+let productoActual = null;
+let vendedorActual = null;
+let editandoProductoId = null;
+
+let productos = [];
+let pedidos = [];
+let chats = [];
+let usuariosCache = [];
+let reportes = [];
+let notificaciones = [];
+let calificaciones = [];
+
+let unsubProductos=null, unsubPedidos=null, unsubChats=null, unsubUsuarios=null, unsubReportes=null, unsubNotificaciones=null, unsubMensajes=null;
+
+/* ==============================
+   HELPERS
+================================= */
+const $ = id => document.getElementById(id);
+function money(n){return "$"+Number(n||0).toFixed(0)}
+function toast(t){
+  let el=$("toast");
+  el.innerText=t;
+  el.classList.add("show");
+  setTimeout(()=>el.classList.remove("show"),2400);
+}
+function st(e){
+  return ["Cancelado","Rechazado"].includes(e) ? "bad" :
+         ["Entregado","Venta finalizada"].includes(e) ? "ok" : "warn";
+}
+function ahora(){return new Date().toLocaleTimeString()}
+function normalizarDoc(d){return {id:d.id,...d.data()}}
+function userName(email){
+  return usuariosCache.find(u=>u.email===email)?.nombre || email || "Usuario";
+}
+function vend(email){
+  return usuariosCache.find(u=>u.email===email);
+}
+function okStore(email){
+  const v = vend(email);
+  return v && v.rol==="vendedor" && v.aprobado!==false && v.bloqueado!==true && v.tiendaAbierta!==false && v.ocupado!==true;
+}
+function necesitaFirebase(){
+  if(firebaseListo) return false;
+  alert("Primero pega tu configuración real de Firebase en firebaseConfig.");
+  return true;
+}
+
+function imagenDefaultProducto(nombre="Producto"){
+  const texto = encodeURIComponent(nombre || "ORBI");
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="500" height="360" viewBox="0 0 500 360">
+    <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff7fa"/><stop offset="1" stop-color="#ff4d6d"/></linearGradient></defs>
+    <rect width="500" height="360" rx="42" fill="url(#g)"/>
+    <circle cx="115" cy="108" r="55" fill="rgba(255,255,255,.45)"/>
+    <circle cx="390" cy="260" r="88" fill="rgba(255,255,255,.28)"/>
+    <text x="250" y="180" font-family="Segoe UI, Arial" font-size="42" font-weight="800" text-anchor="middle" fill="#24101a">ORBI</text>
+    <text x="250" y="228" font-family="Segoe UI, Arial" font-size="24" font-weight="700" text-anchor="middle" fill="#8a6f7c">${texto}</text>
+  </svg>`;
+  return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+}
+
+function archivoADataURLComprimido(file, maxWidth=700, quality=0.72){
+  return new Promise((resolve,reject)=>{
+    if(!file){ resolve(""); return; }
+    if(!file.type.startsWith("image/")){
+      reject(new Error("Selecciona una imagen válida."));
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("No se pudo leer la imagen."));
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error("No se pudo cargar la imagen."));
+      img.onload = () => {
+        const scale = Math.min(1, maxWidth / img.width);
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, Math.round(img.width * scale));
+        canvas.height = Math.max(1, Math.round(img.height * scale));
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img,0,0,canvas.width,canvas.height);
+        resolve(canvas.toDataURL("image/jpeg", quality));
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function previsualizarFotoProducto(){
+  const file = $("prodFoto")?.files?.[0];
+  const img = $("prodPreview");
+  if(!img) return;
+  if(!file){
+    img.style.display="none";
+    img.src="";
+    return;
+  }
+  try{
+    img.src = await archivoADataURLComprimido(file, 700, 0.72);
+    img.style.display="block";
+  }catch(e){
+    alert(e.message);
+    $("prodFoto").value="";
+    img.style.display="none";
+  }
+}
+
+function esAdmin(){return usuarioActual && usuarioActual.rol==="admin"}
+function esVendedorAprobado(){return usuarioActual && usuarioActual.rol==="vendedor" && usuarioActual.aprobado===true && usuarioActual.bloqueado!==true}
+
+/* ==============================
+   NAVEGACIÓN
+================================= */
+function ocultarTodo(){document.querySelectorAll(".screen").forEach(p=>p.classList.remove("active"))}
+function ir(id){
+  ocultarTodo();
+
+  if(["bienvenida","login","registro"].includes(id)) $("topbar").classList.add("hidden");
+  else $("topbar").classList.remove("hidden");
+
+  $(id).classList.add("active");
+
+  if(id==="clienteHome") renderProductos();
+  if(id==="carrito") renderCarrito();
+  if(id==="mapaCampus") renderMapa();
+  if(id==="historialCliente") renderHistorialCliente();
+  if(id==="historialVendedor") renderHistorialVendedor();
+  if(id==="favoritos") renderFavoritos();
+  if(id==="notificaciones") renderNotificaciones();
+  if(id==="chats") renderChats();
+  if(id==="seguimientoPedido") renderSeg();
+  if(id==="perfil") renderPerfil();
+  if(id==="vendedorHome") renderMisProductos();
+  if(id==="pedidosVendedor") renderPedidosVendedor();
+  if(id==="adminHome") renderAdmin();
+  if(id==="adminUsuarios") renderUsuarios();
+  if(id==="adminProductos") renderAdminProductos();
+  if(id==="adminReportes") renderReportes();
+  if(id==="adminPedidos") renderAdminPedidos();
+  if(id==="adminVendedores") renderAdminVendedores();
+}
+function volverHome(){
+  if(!usuarioActual){ir("clienteHome");return}
+  if(usuarioActual.rol==="admin") ir("adminHome");
+  else if(usuarioActual.rol==="vendedor") ir("vendedorHome");
+  else ir("clienteHome");
+}
+function mostrarLogin(){ir("login")}
+function mostrarRegistro(){ir("registro")}
+
+/* ==============================
+   DATOS DEMO INICIALES
+================================= */
+async function crearDemoSiVacio(){
+  if(necesitaFirebase()) return;
+
+  const usersSnap = await getDocs(collection(db,"usuarios"));
+  if(usersSnap.empty){
+    const demoUsers = [
+      {nombre:"Administrador ORBI",email:"admin@orbi.com",rol:"admin",escuela:"ORBI",aprobado:true,bloqueado:false},
+      {nombre:"Ana Vendedora",email:"ana@orbi.com",rol:"vendedor",escuela:"UPIICSA",aprobado:true,bloqueado:false,rating:4.8,ventas:120,tiendaAbierta:true,ocupado:false,tiempo:"10-15 min",zona:"Edificio A"},
+      {nombre:"Luis Ramirez",email:"luis@orbi.com",rol:"cliente",escuela:"UPIICSA",aprobado:true,bloqueado:false},
+      {nombre:"Maria Snacks",email:"maria@orbi.com",rol:"vendedor",escuela:"UPIICSA",aprobado:true,bloqueado:false,rating:4.7,ventas:52,tiendaAbierta:true,ocupado:false,tiempo:"8-12 min",zona:"Cafetería"}
+    ];
+    for(const u of demoUsers){
+      await setDoc(doc(db,"usuarios",u.email),u);
+    }
+  }
+
+  const prodSnap = await getDocs(collection(db,"productos"));
+  if(prodSnap.empty){
+    const demoProducts = [
+      {nombre:"Snickers",precio:20,lugar:"Edificio A",categoria:"Dulces",imagen:"img/snickers.png",desc:"Chocolate para el antojo entre clases.",vendedor:"Ana Vendedora",vendedorEmail:"ana@orbi.com",activo:true,stock:8,escuela:"UPIICSA",createdAt:serverTimestamp()},
+      {nombre:"Coca Cola fría",precio:25,lugar:"Cafetería",categoria:"Bebidas",imagen:"img/coca.png",desc:"Bebida fría lista para entregar.",vendedor:"Ana Vendedora",vendedorEmail:"ana@orbi.com",activo:true,stock:12,escuela:"UPIICSA",createdAt:serverTimestamp()},
+      {nombre:"Oreo pack",precio:18,lugar:"Entrada principal",categoria:"Dulces",imagen:"img/oreo.png",desc:"Galletas para compartir después de clase.",vendedor:"Maria Snacks",vendedorEmail:"maria@orbi.com",activo:true,stock:10,escuela:"UPIICSA",createdAt:serverTimestamp()}
+    ];
+    for(const p of demoProducts){
+      await addDoc(collection(db,"productos"),p);
+    }
+  }
+}
+
+/* ==============================
+   ESCUCHAS EN TIEMPO REAL
+================================= */
+function iniciarEscuchasGlobales(){
+  if(!firebaseListo) return;
+
+  if(unsubProductos) unsubProductos();
+  unsubProductos = onSnapshot(collection(db,"productos"), snap=>{
+    productos = snap.docs.map(normalizarDoc);
+    renderProductos();
+    renderMisProductos();
+    renderAdminProductos();
+  });
+
+  if(unsubUsuarios) unsubUsuarios();
+  unsubUsuarios = onSnapshot(collection(db,"usuarios"), snap=>{
+    usuariosCache = snap.docs.map(normalizarDoc);
+    if(usuarioActual){
+      const fresh = usuariosCache.find(u=>u.email===usuarioActual.email);
+      if(fresh) usuarioActual = fresh;
+    }
+    renderMapa();
+    renderAdmin();
+    renderUsuarios();
+    renderAdminVendedores();
+  });
+
+  if(unsubReportes) unsubReportes();
+  unsubReportes = onSnapshot(collection(db,"reportes"), snap=>{
+    reportes = snap.docs.map(normalizarDoc);
+    renderReportes();
+  });
+}
+
+function iniciarEscuchasUsuario(){
+  if(!firebaseListo || !usuarioActual) return;
+
+  if(unsubPedidos) unsubPedidos();
+  if(unsubChats) unsubChats();
+  if(unsubNotificaciones) unsubNotificaciones();
+
+  unsubPedidos = onSnapshot(collection(db,"pedidos"), snap=>{
+    pedidos = snap.docs.map(normalizarDoc);
+    renderPedidosVendedor();
+    renderHistorialCliente();
+    renderHistorialVendedor();
+    renderAdmin();
+    renderAdminPedidos();
+    renderChats();
+    if(pedidoActual){
+      const p = pedidos.find(x=>x.id===pedidoActual.id);
+      if(p) pedidoActual = p;
+      renderSeg();
+    }
+  });
+
+  unsubChats = onSnapshot(collection(db,"chats"), snap=>{
+    chats = snap.docs.map(normalizarDoc);
+    renderChats();
+  });
+
+  const qNotif = query(collection(db,"notificaciones"), where("para","==",usuarioActual.email));
+  unsubNotificaciones = onSnapshot(qNotif, snap=>{
+    notificaciones = snap.docs.map(normalizarDoc);
+    $("notifCount").innerText = notificaciones.length;
+    renderNotificaciones();
+  });
+}
+
+/* ==============================
+   AUTH
+================================= */
+async function login(){
+  if(necesitaFirebase()) return;
+  const email = $("loginEmail").value.trim();
+  const pass = $("loginPass").value.trim();
+
+  if(!email || !pass){
+    alert("Escribe correo y contraseña.");
+    return;
+  }
+
+  try{
+    const cred = await signInWithEmailAndPassword(auth,email,pass);
+    console.log("LOGIN OK:", cred.user.email);
+    toast("Sesión iniciada...");
+  }catch(e){
+    console.error("ERROR LOGIN:", e);
+    alert("No se pudo iniciar sesión: "+e.code+" - "+e.message);
+  }
+}
+
+async function registrar(){
+  if(necesitaFirebase()) return;
+
+  const nombre=$("regNombre").value.trim()||"Nuevo usuario";
+  const email=$("regEmail").value.trim();
+  const pass=$("regPass").value.trim();
+  const rol=$("regRol").value;
+  const escuela=$("regEscuela").value;
+
+  if(!email||!pass) return alert("Completa correo y contraseña.");
+  if(pass.length<6) return alert("Firebase pide contraseña de mínimo 6 caracteres.");
+
+  try{
+    const cred = await createUserWithEmailAndPassword(auth,email,pass);
+    const userData = {
+      uid:cred.user.uid,
+      nombre,email,rol,escuela,
+      aprobado: rol==="cliente",
+      bloqueado:false,
+      rating:5,
+      ventas:0,
+      tiendaAbierta:true,
+      ocupado:false,
+      tiempo:"10-15 min",
+      zona:"Cafetería",
+      createdAt:serverTimestamp()
+    };
+    await setDoc(doc(db,"usuarios",email),userData);
+    if(rol==="vendedor"){
+      await addDoc(collection(db,"notificaciones"),{
+        para:"admin@orbi.com",
+        texto:`Nuevo vendedor pendiente de aprobación: ${nombre}`,
+        createdAt:serverTimestamp()
+      });
+      alert("Cuenta de vendedor creada. Podrás entrar, pero tus productos no aparecerán hasta que el administrador te apruebe.");
+    }else{
+      toast("Cuenta creada.");
+    }
+  }catch(e){
+    alert("No se pudo crear cuenta: "+e.message);
+  }
+}
+
+async function cerrarSesion(){
+  if(auth) await signOut(auth);
+  usuarioActual=null;
+  visitante=true;
+  carrito=[];
+  $("cartCount").innerText=0;
+  ir("bienvenida");
+}
+
+onAuthStateChanged(auth, async (user)=>{
+  if(!firebaseListo) return;
+
+  if(!user){
+    console.log("AUTH: sin usuario");
+    usuarioActual=null;
+    visitante=true;
+    return;
+  }
+
+  console.log("AUTH: usuario detectado", user.email);
+
+  try{
+    const ref = doc(db,"usuarios",user.email);
+    let snap = await getDoc(ref);
+
+    if(!snap.exists()){
+      const rolDetectado = user.email === "admin@orbi.com" ? "admin" :
+                           user.email === "ana@orbi.com" ? "vendedor" : "cliente";
+
+      await setDoc(ref,{
+        uid:user.uid,
+        nombre:user.email.split("@")[0],
+        email:user.email,
+        rol:rolDetectado,
+        escuela:"UPIICSA",
+        aprobado:true,
+        bloqueado:false,
+        rating:5,
+        ventas:0,
+        tiendaAbierta:true,
+        ocupado:false,
+        tiempo:"10-15 min",
+        zona:"Cafetería",
+        createdAt:serverTimestamp()
+      });
+      snap = await getDoc(ref);
+    }
+
+    usuarioActual = {id:snap.id,...snap.data()};
+
+    if(usuarioActual.bloqueado){
+      alert("Cuenta bloqueada por administrador.");
+      await cerrarSesion();
+      return;
+    }
+
+    if(usuarioActual.rol==="vendedor" && usuarioActual.aprobado===false){
+      alert("Tu cuenta de vendedor aún no está aprobada. Puedes entrar al panel, pero no podrás publicar productos visibles todavía.");
+    }
+
+    campusActivo = usuarioActual.escuela || "UPIICSA";
+    iniciarEscuchasUsuario();
+
+    visitante=false;
+    if(usuarioActual.rol==="admin") ir("adminHome");
+    else if(usuarioActual.rol==="vendedor") ir("vendedorHome");
+    else ir("clienteHome");
+
+  }catch(e){
+    console.error("ERROR DESPUÉS DEL LOGIN / FIRESTORE:", e);
+
+    // Esto evita que la app se quede congelada en login si Auth funcionó,
+    // pero Firestore todavía no está creado o tiene reglas bloqueadas.
+    const rolDetectado = user.email === "admin@orbi.com" ? "admin" :
+                         user.email === "ana@orbi.com" ? "vendedor" : "cliente";
+
+    usuarioActual = {
+      uid:user.uid,
+      nombre:user.email.split("@")[0],
+      email:user.email,
+      rol:rolDetectado,
+      escuela:"UPIICSA",
+      aprobado:true,
+      bloqueado:false,
+      rating:5,
+      ventas:0,
+      tiendaAbierta:true,
+      ocupado:false,
+      tiempo:"10-15 min",
+      zona:"Cafetería"
+    };
+
+    campusActivo="UPIICSA";
+    visitante=false;
+
+    alert("Sí inició sesión, pero Firestore dio error. Revisa si ya creaste Firestore Database y sus reglas. Mientras tanto entrarás en modo básico. Error: "+e.code);
+
+    if(usuarioActual.rol==="admin") ir("adminHome");
+    else if(usuarioActual.rol==="vendedor") ir("vendedorHome");
+    else ir("clienteHome");
+  }
+});
+
+/* ==============================
+   CAMPUS / EXPLORAR
+================================= */
+function activarCampus(){
+  campusActivo=$("campusSelect").value;
+  if(usuarioActual){
+    updateDoc(doc(db,"usuarios",usuarioActual.email),{escuela:campusActivo});
+  }
+  toast("Campus detectado: "+campusActivo);
+  ir("clienteHome");
+}
+function pedirLoginSiHaceFalta(next){
+  if(usuarioActual){next();return}
+  toast("Inicia sesión para continuar.");
+  mostrarLogin();
+}
+
+/* ==============================
+   CLIENTE / PRODUCTOS
+================================= */
+function filtrar(cat){filtro=cat;renderProductos()}
+
+function productoCard(p,cliente=true){
+  return `<div class="card product">
+    <div class="product-img"><img src="${p.imagen}" alt="${p.nombre}" onerror="this.style.display='none';this.parentElement.innerHTML='<span class=&quot;price&quot;>${p.categoria}</span>'"></div>
+    <div class="product-info" onclick="abrirDetalleProducto('${p.id}')">
+      <h3>${p.nombre}</h3>
+      <p>${p.vendedor} · ${p.lugar}</p>
+      <span class="price">${money(p.precio)}</span><br><span class="stock-badge">${p.stock||0} disponibles</span>
+    </div>
+    ${cliente?`<button class="add" onclick="agregarCarrito('${p.id}')">+</button>`:""}
+  </div>`;
+}
+
+function renderProductos(){
+  if(!$("listaProductos")) return;
+  $("saludoCliente").innerText = usuarioActual ? "Hola "+usuarioActual.nombre : "Explora ORBI";
+  $("campusText").innerText = campusActivo+" · vendedores cercanos dentro del campus";
+
+  const q=($("buscador").value||"").toLowerCase();
+  const lista = productos.filter(p=>
+    p.activo!==false &&
+    Number(p.stock||0)>0 &&
+    p.escuela===campusActivo &&
+    okStore(p.vendedorEmail) &&
+    p.nombre.toLowerCase().includes(q) &&
+    (filtro==="Todos" || p.categoria===filtro)
+  );
+
+  $("listaProductos").innerHTML = lista.map(p=>productoCard(p,true)).join("") ||
+    '<div class="card"><p>No hay productos disponibles en tu campus con ese filtro.</p></div>';
+}
+
+function abrirDetalleProducto(id){
+  productoActual = productos.find(p=>p.id===id);
+  if(!productoActual) return;
+  const v=vend(productoActual.vendedorEmail);
+  ir("detalleProducto");
+  $("detalleProductoInfo").innerHTML=`<div class="product-img" style="width:100%;height:190px"><img src="${productoActual.imagen}" onerror="this.style.display='none'"></div>
+  <div class="card"><h2>${productoActual.nombre}</h2><p>${productoActual.desc||""}</p>
+  <p><b>Entrega:</b> ${productoActual.lugar} · ${(v&&v.tiempo)||"10-15 min"}</p>
+  <p><b>Vendedor:</b> ${productoActual.vendedor} · ★ ${(v&&v.rating)||5}</p>
+  <p><b>Stock:</b> ${productoActual.stock||0}</p><h2 class="price">${money(productoActual.precio)}</h2>
+  <button class="btn" onclick="agregarCarrito('${productoActual.id}')">Agregar al carrito</button>
+  <button class="btn btn-outline" onclick="abrirPerfilVendedor('${productoActual.vendedorEmail}')">Ver vendedor</button>
+  <button class="btn btn-outline" onclick="guardarFavorito('${productoActual.id}')">Guardar favorito</button>
+  <button class="btn btn-outline" onclick="reportarProductoCliente('${productoActual.id}')">Reportar producto</button></div>`;
+}
+
+function abrirPerfilVendedor(email){
+  vendedorActual=vend(email);
+  if(!vendedorActual) return;
+  ir("perfilVendedor");
+
+  const ps=productos.filter(p=>p.vendedorEmail===email&&p.activo!==false&&p.escuela===campusActivo);
+  $("perfilVendedorInfo").innerHTML=`<div class="hero"><h2>${vendedorActual.nombre}</h2><p>${vendedorActual.escuela} · ★ ${vendedorActual.rating||5} · ${vendedorActual.ventas||0} ventas</p></div>
+  <div class="card"><p>Tiempo estimado: ${vendedorActual.tiempo||"10-15 min"}</p><p>Estado: ${okStore(email)?"Disponible":"No disponible"}</p></div>
+  <button class="btn" onclick="abrirChatDirecto('${email}')">Contactar vendedor</button>
+  <h3 class="section-title">Productos del vendedor</h3>${ps.map(p=>productoCard(p,true)).join("")||'<div class="card"><p>Sin productos activos.</p></div>'}`;
+}
+
+function guardarFavorito(id){
+  if(!favoritos.includes(id)) favoritos.push(id);
+  toast("Guardado en favoritos");
+}
+
+function renderFavoritos(){
+  $("favoritosLista").innerHTML = favoritos.map(id=>{
+    const p=productos.find(x=>x.id===id);
+    return p ? productoCard(p,true) : "";
+  }).join("") || '<div class="card"><p>No tienes favoritos.</p></div>';
+}
+
+function agregarCarrito(id){
+  const p=productos.find(x=>x.id===id);
+  if(!p || Number(p.stock||0)<1) return alert("Producto sin stock");
+  if(carrito.length && carrito[0].vendedorEmail!==p.vendedorEmail){
+    return alert("Por ahora el pedido debe ser de un solo vendedor.");
+  }
+  carrito.push(p);
+  $("cartCount").innerText=carrito.length;
+  toast("Producto agregado");
+}
+
+function vaciarCarrito(){
+  carrito=[];
+  $("cartCount").innerText=0;
+  renderCarrito();
+}
+
+function renderCarrito(){
+  const sub=carrito.reduce((s,p)=>s+Number(p.precio||0),0);
+  $("carritoLista").innerHTML=(carrito.map(p=>productoCard(p,false)).join("")||'<div class="card"><p>No tienes productos.</p></div>')+
+  `<div class="card"><p><b>Total estimado:</b> ${money(sub)}</p><p>ORBI no cobra. El pago se acuerda entre estudiante y vendedor.</p></div>`;
+}
+
+function confirmarAntesPedido(){
+  if(!carrito.length) return alert("Agrega un producto primero.");
+  pedirLoginSiHaceFalta(async function(){
+    if(confirm("¿Estás seguro que quieres contactar al vendedor para este pedido?")){
+      await crearPedido();
+    }
+  });
+}
+
+async function crearPedido(){
+  if(necesitaFirebase()) return;
+  const pr=carrito[0];
+  const total=carrito.reduce((s,p)=>s+Number(p.precio||0),0);
+
+  const pedidoData={
+    cliente:usuarioActual.nombre,
+    clienteEmail:usuarioActual.email,
+    vendedor:pr.vendedor,
+    vendedorEmail:pr.vendedorEmail,
+    productos:carrito.map(p=>({id:p.id,nombre:p.nombre,precio:p.precio,imagen:p.imagen})),
+    total,
+    punto:$("puntoEntrega").value,
+    pago:$("metodoPago").value,
+    estado:"Solicitado",
+    timeline:["Solicitado"],
+    clienteFinalizo:false,
+    vendedorFinalizo:false,
+    escuela:campusActivo,
+    createdAt:serverTimestamp()
+  };
+
+  const pedidoRef = await addDoc(collection(db,"pedidos"),pedidoData);
+
+  for(const item of carrito){
+    const pRef=doc(db,"productos",item.id);
+    await updateDoc(pRef,{stock:increment(-1)});
+  }
+
+  const chatRef = await addDoc(collection(db,"chats"),{
+    pedidoId:pedidoRef.id,
+    clienteEmail:usuarioActual.email,
+    vendedorEmail:pr.vendedorEmail,
+    titulo:"Pedido #"+pedidoRef.id.slice(0,5),
+    createdAt:serverTimestamp(),
+    updatedAt:serverTimestamp()
+  });
+
+  await addDoc(collection(db,"chats",chatRef.id,"mensajes"),{
+    de:"sistema",
+    texto:`Pedido creado por ${money(total)}. Entrega: ${pedidoData.punto}. Pago: ${pedidoData.pago}. Coordinen aquí la entrega.`,
+    createdAt:serverTimestamp()
+  });
+
+  await addDoc(collection(db,"notificaciones"),{
+    para:pr.vendedorEmail,
+    texto:`Nuevo pedido de ${usuarioActual.nombre}: ${money(total)}`,
+    createdAt:serverTimestamp()
+  });
+
+  carrito=[];
+  $("cartCount").innerText=0;
+  pedidoActual={id:pedidoRef.id,...pedidoData};
+  toast("Pedido enviado. El vendedor lo verá en pedidos y chats.");
+  abrirChat(chatRef.id);
+}
+
+async function abrirChatDirecto(vendedorEmail){
+  pedirLoginSiHaceFalta(async function(){
+    const chatRef = await addDoc(collection(db,"chats"),{
+      pedidoId:null,
+      clienteEmail:usuarioActual.email,
+      vendedorEmail,
+      titulo:"Chat con "+userName(vendedorEmail),
+      createdAt:serverTimestamp(),
+      updatedAt:serverTimestamp()
+    });
+
+    await addDoc(collection(db,"chats",chatRef.id,"mensajes"),{
+      de:"sistema",
+      texto:"Chat iniciado para resolver dudas antes de comprar.",
+      createdAt:serverTimestamp()
+    });
+
+    await addDoc(collection(db,"notificaciones"),{
+      para:vendedorEmail,
+      texto:`Nuevo mensaje de ${usuarioActual.nombre}`,
+      createdAt:serverTimestamp()
+    });
+
+    abrirChat(chatRef.id);
+  });
+}
+
+function renderMapa(){
+  if(!$("nearbyList")) return;
+  $("mapSchool").innerText=campusActivo;
+  const vendedores=usuariosCache.filter(u=>u.rol==="vendedor"&&u.escuela===campusActivo&&u.bloqueado!==true);
+  $("nearbyList").innerHTML=vendedores.map(u=>`<div class="card"><h3>${u.nombre}</h3><p>★ ${u.rating||5} · cerca de ${u.zona||"Cafetería"}</p><button class="btn btn-small" onclick="abrirPerfilVendedor('${u.email}')">Ver tienda</button></div>`).join("")||'<div class="card"><p>No hay vendedores cerca.</p></div>';
+}
+
+/* ==============================
+   CHATS EN TIEMPO REAL
+================================= */
+function renderChats(){
+  if(!$("listaChats")) return;
+  if(!usuarioActual){
+    $("listaChats").innerHTML='<div class="card"><p>Inicia sesión para ver tus chats.</p></div>';
+    return;
+  }
+
+  let mis=chats.filter(c=>{
+    if(usuarioActual.rol==="admin") return true;
+    if(usuarioActual.rol==="vendedor") return c.vendedorEmail===usuarioActual.email;
+    return c.clienteEmail===usuarioActual.email;
+  });
+
+  mis.sort((a,b)=>(b.updatedAt?.seconds||0)-(a.updatedAt?.seconds||0));
+
+  $("listaChats").innerHTML=mis.map(c=>{
+    const p=c.pedidoId ? pedidos.find(x=>x.id===c.pedidoId) : null;
+    const otra = usuarioActual.rol==="vendedor" ? userName(c.clienteEmail) : userName(c.vendedorEmail);
+    return `<div class="card" onclick="abrirChat('${c.id}')"><h3>${c.titulo}</h3><p><b>${usuarioActual.rol==="vendedor"?"Cliente":"Vendedor"}:</b> ${otra}</p>${p?`<p>Total: ${money(p.total)} · Punto: ${p.punto}</p><span class="status ${st(p.estado)}">${p.estado}</span>`:'<span class="status">Chat directo</span>'}</div>`;
+  }).join("") || '<div class="card"><p>No tienes chats recibidos.</p></div>';
+}
+
+function abrirChat(id){
+  chatActual=chats.find(c=>c.id===id) || {id};
+  ir("chatDetalle");
+  renderChatDetalle();
+
+  if(unsubMensajes) unsubMensajes();
+  const qMsg=query(collection(db,"chats",id,"mensajes"), orderBy("createdAt","asc"));
+  unsubMensajes=onSnapshot(qMsg,snap=>{
+    if(!chatActual) return;
+    chatActual.mensajes=snap.docs.map(normalizarDoc);
+    renderChatDetalle();
+  });
+}
+
+function renderChatDetalle(){
+  if(!chatActual) return;
+  const p=chatActual.pedidoId ? pedidos.find(x=>x.id===chatActual.pedidoId) : null;
+  $("chatTitulo").innerText=chatActual.titulo || "Chat";
+
+  const msgs=chatActual.mensajes || [];
+  $("mensajesChat").innerHTML=msgs.map(m=>`<div class="msg ${m.de==="sistema"?"system":(usuarioActual&&m.de===usuarioActual.email?"me":"other")}">${m.texto}</div>`).join("");
+
+  $("mensajesChat").scrollTop=$("mensajesChat").scrollHeight;
+  $("estadoPedido").innerText=p?`Estado: ${p.estado} | Cliente: ${p.clienteFinalizo?"Sí":"No"} | Vendedor: ${p.vendedorFinalizo?"Sí":"No"}`:"Chat directo sin pedido";
+}
+
+async function enviarMensaje(){
+  if(!chatActual || !$("mensajeInput").value.trim()) return;
+  const texto=$("mensajeInput").value.trim();
+  $("mensajeInput").value="";
+
+  await addDoc(collection(db,"chats",chatActual.id,"mensajes"),{
+    de:usuarioActual.email,
+    texto,
+    createdAt:serverTimestamp()
+  });
+
+  await updateDoc(doc(db,"chats",chatActual.id),{updatedAt:serverTimestamp()});
+
+  const para = usuarioActual.email===chatActual.clienteEmail ? chatActual.vendedorEmail : chatActual.clienteEmail;
+  await addDoc(collection(db,"notificaciones"),{
+    para,
+    texto:`Nuevo mensaje de ${usuarioActual.nombre}`,
+    createdAt:serverTimestamp()
+  });
+}
+
+async function finalizarPedido(){
+  if(!chatActual || !chatActual.pedidoId) return alert("Este chat no tiene pedido para finalizar.");
+  const p=pedidos.find(x=>x.id===chatActual.pedidoId);
+  if(!p) return;
+
+  const upd={};
+  if(usuarioActual.email===p.clienteEmail) upd.clienteFinalizo=true;
+  if(usuarioActual.email===p.vendedorEmail) upd.vendedorFinalizo=true;
+
+  const nuevoCliente = upd.clienteFinalizo || p.clienteFinalizo;
+  const nuevoVendedor = upd.vendedorFinalizo || p.vendedorFinalizo;
+
+  if(nuevoCliente && nuevoVendedor){
+    upd.estado="Venta finalizada";
+    upd.timeline=[...(p.timeline||[]),"Venta finalizada"];
+  }
+
+  await updateDoc(doc(db,"pedidos",p.id),upd);
+
+  await addDoc(collection(db,"chats",chatActual.id,"mensajes"),{
+    de:"sistema",
+    texto: nuevoCliente&&nuevoVendedor ? "Venta cerrada correctamente. Ambas partes confirmaron." : "Confirmación registrada. Falta que la otra parte finalice.",
+    createdAt:serverTimestamp()
+  });
+
+  if(nuevoCliente&&nuevoVendedor && usuarioActual.rol==="cliente"){
+    pedidoActual={...p,...upd};
+    $("calificarNombre").innerText=p.vendedor;
+    ir("calificar");
+  }
+}
+
+/* ==============================
+   PEDIDOS / HISTORIAL
+================================= */
+function timeline(p){
+  let pasos=["Solicitado","Aceptado","Preparando","En camino","Entregado","Venta finalizada"];
+  if(["Cancelado","Rechazado"].includes(p.estado)) pasos=["Solicitado",p.estado];
+  let a=pasos.indexOf(p.estado);
+  return `<div class="timeline">${pasos.map((x,i)=>`<div class="step ${i<=a?"done":""}"><span class="dotline"></span><div><b>${x}</b><small>${i<=a?"Completado":"Pendiente"}</small></div></div>`).join("")}</div>`;
+}
+
+function abrirSeguimiento(id){pedidoActual=pedidos.find(p=>p.id===id);ir("seguimientoPedido")}
+
+function renderSeg(){
+  if(!$("segInfo")) return;
+  if(!pedidoActual&&usuarioActual) pedidoActual=pedidos.filter(p=>p.clienteEmail===usuarioActual.email).at(-1);
+  const c=pedidoActual?chats.find(x=>x.pedidoId===pedidoActual.id):null;
+  $("segInfo").innerHTML=pedidoActual?`<button class="btn btn-outline" onclick="volverHome()">Volver</button>
+  <div class="hero"><h2>Pedido #${pedidoActual.id.slice(0,5)}</h2><p>${pedidoActual.vendedor} · ${pedidoActual.punto}</p></div>
+  <div class="card"><p><b>Total:</b> ${money(pedidoActual.total)}</p><p><b>Pago:</b> ${pedidoActual.pago}</p><p><b>Estado:</b> <span class="status ${st(pedidoActual.estado)}">${pedidoActual.estado}</span></p>${timeline(pedidoActual)}</div>
+  ${c?`<button class="btn" onclick="abrirChat('${c.id}')">Abrir chat</button>`:""}
+  <button class="btn btn-outline" onclick="cancelarPedido('${pedidoActual.id}')">Cancelar pedido</button>
+  <button class="btn btn-outline" onclick="ir('soporte')">Reportar problema</button>`:'<div class="card"><p>No hay pedido seleccionado.</p></div>';
+}
+
+async function cancelarPedido(id){
+  const p=pedidos.find(x=>x.id===id);
+  if(!p || ["Entregado","Venta finalizada"].includes(p.estado)) return alert("Este pedido ya no se puede cancelar");
+  await updateDoc(doc(db,"pedidos",id),{estado:"Cancelado",timeline:["Solicitado","Cancelado"]});
+  await addDoc(collection(db,"reportes"),{texto:"Pedido cancelado por cliente: #"+id,createdAt:serverTimestamp()});
+  toast("Pedido cancelado");
+}
+
+function renderHistorialCliente(){
+  if(!$("historialClienteLista")) return;
+  if(!usuarioActual){
+    $("historialClienteLista").innerHTML='<div class="card"><p>Inicia sesión para ver historial.</p></div>';
+    return;
+  }
+  const mis=pedidos.filter(p=>p.clienteEmail===usuarioActual.email);
+  $("historialClienteLista").innerHTML=mis.map(p=>`<div class="card"><h3>Pedido #${p.id.slice(0,5)}</h3><p>${p.vendedor} · ${money(p.total)}</p><span class="status ${st(p.estado)}">${p.estado}</span><br><button class="btn btn-small" onclick="abrirSeguimiento('${p.id}')">Ver detalle</button><button class="btn btn-small btn-outline" onclick="ir('soporte')">Reportar</button></div>`).join("")||'<div class="card"><p>No tienes compras.</p></div>';
+}
+
+async function guardarCalificacion(){
+  if(!pedidoActual) return;
+  await addDoc(collection(db,"calificaciones"),{
+    pedidoId:pedidoActual.id,
+    vendedor:pedidoActual.vendedor,
+    vendedorEmail:pedidoActual.vendedorEmail,
+    rating:Number($("rating").value),
+    comentario:$("comentarioRating").value,
+    createdAt:serverTimestamp()
+  });
+  await updateDoc(doc(db,"usuarios",pedidoActual.vendedorEmail),{ventas:increment(1)});
+  toast("Calificación enviada");
+  volverHome();
+}
+
+async function enviarSoporte(){
+  await addDoc(collection(db,"reportes"),{
+    usuario:usuarioActual?.email||"visitante",
+    texto:($("soporteMotivo")?.value||"Reporte")+": "+(($("soporteTexto")?.value)||"Sin detalle"),
+    createdAt:serverTimestamp()
+  });
+  toast("Reporte enviado al administrador");
+  if($("soporteTexto")) $("soporteTexto").value="";
+  volverHome();
+}
+
+async function reportarProductoCliente(id){
+  const p=productos.find(x=>x.id===id);
+  await addDoc(collection(db,"reportes"),{usuario:usuarioActual?.email||"visitante",texto:"Producto reportado: "+p.nombre,createdAt:serverTimestamp()});
+  toast("Reporte enviado");
+}
+
+/* ==============================
+   VENDEDOR
+================================= */
+function renderMisProductos(){
+  if(!$("misProductos") || !usuarioActual || usuarioActual.rol!=="vendedor") return;
+  if(usuarioActual.aprobado===false){
+    $("estadoTiendaTexto").innerText="Tu cuenta está pendiente de aprobación por el administrador.";
+    $("btnTienda").disabled=true;
+    $("btnOcupado").disabled=true;
+    $("misProductos").innerHTML='<div class="card"><h3>Solicitud pendiente</h3><p>El administrador debe aprobar tu cuenta para que puedas vender y publicar productos visibles.</p></div>';
+    return;
+  }
+  $("btnTienda").disabled=false;
+  $("btnOcupado").disabled=false;
+  const mios=productos.filter(p=>p.vendedorEmail===usuarioActual.email);
+  $("ventasHoy").innerText=money(pedidos.filter(p=>p.vendedorEmail===usuarioActual.email&&p.estado==="Venta finalizada").reduce((s,p)=>s+Number(p.total||0),0));
+  $("pedidosPendientes").innerText=pedidos.filter(p=>p.vendedorEmail===usuarioActual.email&&!["Venta finalizada","Cancelado","Rechazado"].includes(p.estado)).length;
+  $("estadoTiendaTexto").innerText=usuarioActual.tiendaAbierta===false?"Tienda cerrada temporalmente.":usuarioActual.ocupado?"Estás en modo ocupado/no disponible.":"Tienda abierta y visible dentro del campus.";
+  $("btnTienda").innerText=usuarioActual.tiendaAbierta===false?"Abrir tienda":"Cerrar tienda";
+  $("btnOcupado").innerText=usuarioActual.ocupado?"Quitar ocupado":"Modo ocupado";
+  $("misProductos").innerHTML=mios.map(p=>`<div class="card product"><div class="product-img"><img src="${p.imagen}" onerror="this.style.display='none'"></div><div class="product-info"><h3>${p.nombre}</h3><p>${p.lugar} · ${p.activo!==false?"Activo":"Pausado"} · Stock ${p.stock||0}</p><span class="price">${money(p.precio)}</span><br><button class="btn btn-small" onclick="editarProducto('${p.id}')">Editar</button><button class="btn btn-small btn-outline" onclick="toggleProducto('${p.id}')">${p.activo!==false?"Pausar":"Activar"}</button><button class="btn btn-small btn-outline" onclick="eliminarProducto('${p.id}')">Eliminar</button></div></div>`).join("")||'<div class="card"><p>Aún no has subido productos.</p></div>';
+}
+
+async function guardarProducto(){
+  if(necesitaFirebase()) return;
+  if(!esVendedorAprobado()) return alert("Tu cuenta de vendedor aún no está aprobada por el administrador.");
+
+  const nombre = $("prodNombre").value.trim();
+  const precio = Number($("prodPrecio").value);
+  const lugar = $("prodLugar").value.trim();
+  const categoria = $("prodCategoria").value;
+  const desc = $("prodDesc").value.trim();
+  const stock = Number($("prodStock").value || 0);
+  const tiempo = $("prodTiempo").value.trim() || "10-15 min";
+
+  if(!nombre || !precio || !lugar){
+    return alert("Completa nombre, precio y lugar de entrega.");
+  }
+  if(stock < 1){
+    return alert("El stock debe ser mínimo 1.");
+  }
+
+  let imagenFinal = editandoProductoId ? (productos.find(x=>x.id===editandoProductoId)?.imagen || "") : "";
+  const archivo = $("prodFoto")?.files?.[0];
+
+  try{
+    if(archivo){
+      imagenFinal = await archivoADataURLComprimido(archivo, 700, 0.72);
+    }
+    if(!imagenFinal){
+      imagenFinal = imagenDefaultProducto(nombre);
+    }
+
+    const data={
+      nombre,
+      precio,
+      lugar,
+      categoria,
+      imagen:imagenFinal,
+      desc,
+      vendedor:usuarioActual.nombre,
+      vendedorEmail:usuarioActual.email,
+      activo:true,
+      stock,
+      escuela:usuarioActual.escuela || campusActivo,
+      updatedAt:serverTimestamp()
+    };
+
+    await updateDoc(doc(db,"usuarios",usuarioActual.email),{tiempo});
+
+    if(editandoProductoId){
+      await updateDoc(doc(db,"productos",editandoProductoId),data);
+      editandoProductoId=null;
+    }else{
+      data.createdAt = serverTimestamp();
+      await addDoc(collection(db,"productos"),data);
+    }
+
+    $("prodNombre").value="";
+    $("prodPrecio").value="";
+    $("prodLugar").value="";
+    $("prodDesc").value="";
+    $("prodStock").value="";
+    $("prodTiempo").value="";
+    if($("prodFoto")) $("prodFoto").value="";
+    if($("prodPreview")){
+      $("prodPreview").src="";
+      $("prodPreview").style.display="none";
+    }
+    $("formProductoTitulo").innerText="Subir producto";
+    toast("Producto guardado y visible para clientes del campus.");
+    ir("vendedorHome");
+  }catch(e){
+    console.error("ERROR AL GUARDAR PRODUCTO:", e);
+    alert("No se pudo guardar el producto: "+(e.code || e.message || e));
+  }
+}
+
+function editarProducto(id){
+  const p=productos.find(x=>x.id===id);
+  editandoProductoId=id;
+  $("prodNombre").value=p.nombre;
+  $("prodPrecio").value=p.precio;
+  $("prodLugar").value=p.lugar;
+  $("prodCategoria").value=p.categoria || "Otro";
+  $("prodDesc").value=p.desc||"";
+  if($("prodPreview") && p.imagen){
+    $("prodPreview").src=p.imagen;
+    $("prodPreview").style.display="block";
+  }
+  $("prodStock").value=p.stock||0;
+  $("prodTiempo").value=usuarioActual.tiempo||"10-15 min";
+  ir("subirProducto");
+}
+
+async function toggleProducto(id){
+  const p=productos.find(x=>x.id===id);
+  await updateDoc(doc(db,"productos",id),{activo:!(p.activo!==false)});
+}
+
+async function eliminarProducto(id){await deleteDoc(doc(db,"productos",id))}
+
+async function toggleTienda(){
+  await updateDoc(doc(db,"usuarios",usuarioActual.email),{tiendaAbierta:!(usuarioActual.tiendaAbierta!==false)});
+}
+
+async function toggleOcupado(){
+  await updateDoc(doc(db,"usuarios",usuarioActual.email),{ocupado:!usuarioActual.ocupado});
+}
+
+function renderPedidosVendedor(){
+  if(!$("listaPedidosVendedor") || !usuarioActual) return;
+  const mis=pedidos.filter(p=>p.vendedorEmail===usuarioActual.email);
+  $("listaPedidosVendedor").innerHTML=mis.map(p=>`<div class="card" onclick="abrirDetallePedido('${p.id}')"><h3>Pedido #${p.id.slice(0,5)}</h3><p>${p.cliente} · ${money(p.total)}</p><p>${p.punto} · ${p.pago}</p><span class="status ${st(p.estado)}">${p.estado}</span></div>`).join("")||'<div class="card"><p>Aún no tienes pedidos.</p></div>';
+}
+
+function abrirDetallePedido(id){
+  pedidoActual=pedidos.find(p=>p.id===id);
+  ir("detallePedido");
+  renderDetallePedido();
+}
+
+function renderDetallePedido(){
+  if(!pedidoActual) return;
+  $("detallePedidoInfo").innerHTML=`<div class="card"><h3>Pedido #${pedidoActual.id.slice(0,5)}</h3><p><b>Cliente:</b> ${pedidoActual.cliente}</p><p><b>Punto:</b> ${pedidoActual.punto}</p><p><b>Pago:</b> ${pedidoActual.pago}</p><p><b>Total:</b> ${money(pedidoActual.total)}</p><span class="status ${st(pedidoActual.estado)}">${pedidoActual.estado}</span>${timeline(pedidoActual)}</div>
+  <button class="btn" onclick="estadoPedidoSet('Aceptado')">Aceptar pedido</button>
+  <button class="btn btn-outline" onclick="estadoPedidoSet('Rechazado')">Rechazar pedido</button>
+  <button class="btn" onclick="estadoPedidoSet('Preparando')">Preparando</button>
+  <button class="btn" onclick="estadoPedidoSet('En camino')">En camino</button>
+  <button class="btn" onclick="estadoPedidoSet('Entregado')">Entregado</button>
+  <button class="btn btn-outline" onclick="abrirChatDesdePedido()">Abrir chat</button>`;
+}
+
+async function estadoPedidoSet(e){
+  const nuevaTimeline=[...(pedidoActual.timeline||[])];
+  if(!nuevaTimeline.includes(e)) nuevaTimeline.push(e);
+
+  await updateDoc(doc(db,"pedidos",pedidoActual.id),{estado:e,timeline:nuevaTimeline});
+
+  const c=chats.find(c=>c.pedidoId===pedidoActual.id);
+  if(c){
+    await addDoc(collection(db,"chats",c.id,"mensajes"),{
+      de:"sistema",
+      texto:"Estado actualizado: "+e,
+      createdAt:serverTimestamp()
+    });
+    await addDoc(collection(db,"notificaciones"),{
+      para:pedidoActual.clienteEmail,
+      texto:`Tu pedido fue actualizado: ${e}`,
+      createdAt:serverTimestamp()
+    });
+  }
+}
+
+function abrirChatDesdePedido(){
+  const c=chats.find(c=>c.pedidoId===pedidoActual.id);
+  if(c) abrirChat(c.id);
+}
+
+function renderHistorialVendedor(){
+  if(!$("historialVendedorLista") || !usuarioActual) return;
+  const mis=pedidos.filter(p=>p.vendedorEmail===usuarioActual.email);
+  $("historialVendedorLista").innerHTML=mis.map(p=>`<div class="card"><h3>Venta #${p.id.slice(0,5)}</h3><p>${p.cliente} · ${money(p.total)}</p><span class="status ${st(p.estado)}">${p.estado}</span></div>`).join("")||'<div class="card"><p>Sin ventas.</p></div>';
+}
+
+/* ==============================
+   ADMIN
+================================= */
+function renderAdmin(){
+  if(!$("totalUsuarios")) return;
+  $("totalUsuarios").innerText=usuariosCache.length;
+  $("totalProductos").innerText=productos.length;
+  $("totalPedidos").innerText=pedidos.length;
+  $("totalVentas").innerText=money(pedidos.reduce((s,p)=>s+Number(p.total||0),0));
+}
+function renderUsuarios(){
+  if(!$("listaUsuarios")) return;
+  $("listaUsuarios").innerHTML=usuariosCache.map(u=>`<div class="card"><h3>${u.nombre}</h3><p>${u.email} · ${u.escuela}</p><span class="status">${u.rol}</span> <span class="status ${u.bloqueado?'bad':(u.aprobado===false?'warn':'ok')}">${u.bloqueado?'Bloqueado':(u.aprobado===false?'Pendiente':'Aprobado')}</span><br>${u.rol==='vendedor'&&u.aprobado===false?`<button class="btn btn-small" onclick="aprobarUsuario('${u.email}')">Aprobar vendedor</button>`:""}<button class="btn btn-small btn-outline" onclick="bloquearUsuario('${u.email}')">${u.bloqueado?"Desbloquear":"Bloquear"}</button></div>`).join("");
+}
+async function aprobarUsuario(email){
+  await updateDoc(doc(db,"usuarios",email),{aprobado:true,bloqueado:false});
+  await addDoc(collection(db,"notificaciones"),{para:email,texto:"Tu cuenta de vendedor fue aprobada. Ya puedes vender en ORBI.",createdAt:serverTimestamp()});
+  toast("Usuario aprobado");
+}
+async function bloquearUsuario(email){
+  const u=usuariosCache.find(x=>x.email===email);
+  await updateDoc(doc(db,"usuarios",email),{bloqueado:!u.bloqueado});
+}
+function renderAdminProductos(){
+  if(!$("adminListaProductos")) return;
+  $("adminListaProductos").innerHTML=productos.map(p=>`<div class="card product"><div class="product-img"><img src="${p.imagen}" onerror="this.style.display='none'"></div><div class="product-info"><h3>${p.nombre}</h3><p>${p.vendedor} · ${p.categoria} · ${p.escuela}</p><b>${money(p.precio)}</b><br><button class="btn btn-small btn-outline" onclick="reportarProducto('${p.id}')">${p.activo!==false?'Bloquear':'Desbloqueado/activar'}</button></div></div>`).join("");
+}
+async function reportarProducto(id){
+  const p=productos.find(p=>p.id===id);
+  const nuevoEstado = !(p.activo!==false);
+  await updateDoc(doc(db,"productos",id),{activo:nuevoEstado,reportado:!nuevoEstado});
+  await addDoc(collection(db,"reportes"),{texto:(nuevoEstado?"Producto reactivado: ":"Producto bloqueado: ")+p.nombre,createdAt:serverTimestamp()});
+  toast(nuevoEstado?"Producto activado":"Producto bloqueado");
+}
+function renderReportes(){
+  if(!$("listaReportes")) return;
+  $("listaReportes").innerHTML=reportes.map(r=>`<div class="card"><p>${r.texto}</p></div>`).join("")||'<div class="card"><p>Sin reportes.</p></div>';
+}
+function renderAdminPedidos(){
+  if(!$("adminListaPedidos")) return;
+  $("adminListaPedidos").innerHTML=pedidos.map(p=>`<div class="card"><h3>Pedido #${p.id.slice(0,5)}</h3><p>${p.cliente} → ${p.vendedor}</p><p>${money(p.total)} · ${p.punto}</p><span class="status ${st(p.estado)}">${p.estado}</span></div>`).join("")||'<div class="card"><p>Sin pedidos activos.</p></div>';
+}
+function renderAdminVendedores(){
+  if(!$("adminListaVendedores")) return;
+  const vendedores=usuariosCache.filter(u=>u.rol==="vendedor");
+  $("adminListaVendedores").innerHTML=vendedores.map(u=>`<div class="card"><h3>${u.nombre}</h3><p>${u.email}</p><p>${u.escuela} · ★ ${u.rating||5} · ${u.ventas||0} ventas</p><span class="status ${u.aprobado===false?'warn':(okStore(u.email)?'ok':'bad')}">${u.aprobado===false?'Pendiente de aprobación':(okStore(u.email)?'Disponible':'No disponible')}</span><br>${u.aprobado===false?`<button class="btn btn-small" onclick="aprobarUsuario('${u.email}')">Aprobar vendedor</button>`:""}<button class="btn btn-small btn-outline" onclick="bloquearUsuario('${u.email}')">${u.bloqueado?"Desbloquear":"Bloquear"}</button></div>`).join("")||'<div class="card"><p>No hay vendedores.</p></div>';
+}
+
+/* ==============================
+   PERFIL / NOTIFICACIONES
+================================= */
+function renderPerfil(){
+  if(!usuarioActual){
+    $("perfilNombre").innerText="Visitante";
+    $("perfilRol").innerText="Sin sesión";
+    $("perfilEscuela").innerText="Inicia sesión para administrar tu perfil.";
+    return;
+  }
+  $("perfilNombre").innerText=usuarioActual.nombre;
+  $("perfilRol").innerText=usuarioActual.rol;
+  $("perfilEscuela").innerText="Escuela: "+usuarioActual.escuela;
+}
+function renderNotificaciones(){
+  if(!$("notificacionesLista")) return;
+  $("notificacionesLista").innerHTML=notificaciones.map(n=>`<div class="card"><p>${n.texto}</p><span class="status">${n.createdAt?.toDate ? n.createdAt.toDate().toLocaleTimeString() : ""}</span></div>`).join("")||'<div class="card"><p>Sin notificaciones.</p></div>';
+}
+
+/* ==============================
+   EXPORTAR FUNCIONES AL HTML
+================================= */
+Object.assign(window,{
+  ir,volverHome,mostrarLogin,mostrarRegistro,login,registrar,cerrarSesion,activarCampus,
+  filtrar,renderProductos,abrirDetalleProducto,abrirPerfilVendedor,guardarFavorito,agregarCarrito,
+  vaciarCarrito,confirmarAntesPedido,abrirChatDirecto,abrirChat,enviarMensaje,finalizarPedido,
+  abrirSeguimiento,cancelarPedido,guardarCalificacion,enviarSoporte,reportarProductoCliente,
+  guardarProducto,editarProducto,toggleProducto,eliminarProducto,toggleTienda,toggleOcupado,
+  abrirDetallePedido,estadoPedidoSet,abrirChatDesdePedido,aprobarUsuario,bloquearUsuario,reportarProducto,previsualizarFotoProducto
+});
+
+/* ==============================
+   ARRANQUE
+================================= */
+if(firebaseListo){
+  try{
+    await crearDemoSiVacio();
+    iniciarEscuchasGlobales();
+  }catch(e){
+    console.error("ERROR AL INICIAR FIRESTORE:", e);
+    toast("Auth listo, pero falta revisar Firestore.");
+  }
+}else{
+  toast("Pega tu configuración Firebase para activar datos reales.");
+}
+</script>
+</body>
+</html>
